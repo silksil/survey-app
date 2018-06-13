@@ -1,4 +1,4 @@
-`use strict`
+`use strict`;
 
 const express = require('express');
 const mongoose = require('mongoose')
@@ -12,7 +12,7 @@ mongoose.connect(keys.mongoURI);
 
 const app = express();
 
-app.use(
+app.use( //
   cookieSession({
     maxAge: 30 * 24 * 60 * 60 * 1000, //how long it can exist in the browser before it expires
     keys: [keys.cookieKey] // to encrypt our cookie
@@ -20,7 +20,7 @@ app.use(
 );
 
 app.use(passport.initialize());
-app.use(passport.session())
+app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 

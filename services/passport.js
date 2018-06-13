@@ -1,4 +1,5 @@
-`use strict`
+`use strict`;
+
 const passport = require ('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const mongoose = require('mongoose');
@@ -27,7 +28,6 @@ passport.use(
       User.findOne({googleId: profile.id})
       .then(existingUser => {
         if (existingUser) {
-          console.log(existingUser)
           done(null, existingUser) //  first argument is error, second user. Done tells passport that we have finished creating a user and that we can resume the auth process
         } else {
           new User({googleId: profile.id})
