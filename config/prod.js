@@ -4,6 +4,3 @@ module.exports = {
   mongoURI: process.env.MONGO_URI,
   cookieKey: process.env.COOKIE_KEY
 };
-
-
-mongodb://silk:Grappig!123@ds159020.mlab.com:59020/emailyprod
