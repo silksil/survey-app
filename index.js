@@ -1,5 +1,6 @@
 `use strict`;
 
+console.log("test")
 const express = require('express');
 const mongoose = require('mongoose')
 const keys = require('./config/keys')
