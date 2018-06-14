@@ -22,7 +22,8 @@ passport.use(
   new GoogleStrategy({ // states: hey passport, I want you to know that the google strategy is available and this is the config to set it up.
     clientID: keys.googleClientID,
     clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
+    callbackURL: '/auth/google/callback',
+    proxy: true
   },
     (accessToken, refreshToken, profile, done) => {  //callback that is being called from the google flow
       User.findOne({googleId: profile.id})
