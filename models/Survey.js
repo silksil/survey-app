@@ -10,12 +10,9 @@ const surveySchema = new Schema({
   recipients: [RecipientSchema],
   yes: { type: Number, default: 0 },
   no: { type: Number, default: 0 },
-  __user: { type: Schema.Types.ObjectId, ref: 'user'},
+  _user: { type: Schema.Types.ObjectId, ref: 'user'}, //  indicate that is has an type that is the id of the user that owns a record
   dateSent: Date,
   lastResponded: Date
-  // underscore is not required, but it is convention to indicate it is a reference/relationship field
-  // we indicate that is has an type that is the id of the user that owns a record
-  // the reference we are making belongs to the user collection
 });
 
 mongoose.model('survey', surveySchema);

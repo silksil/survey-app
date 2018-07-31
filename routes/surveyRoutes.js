@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const path = require('path-parser');
+const Path = require('path-parser').default;
 const { URL } = require('url');
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
@@ -9,7 +9,7 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate')
 
 const Survey = mongoose.model('survey')
 
-module.exports = app => {
+module.exports = (app) => {
   app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     res.send('Thanks for voting!');
   });
@@ -26,40 +26,46 @@ module.exports = app => {
 
   });
 
-  app.post('/api/survey/webhooks', (req,res) => {
 
-    console.log(req.body)
-     // 1. Get the body
-    const events = _map(req.body, ({email, url})=> {
-      // 2. extract the path from the url (we only care about the last part: api/surveys/:surveyId/yes)
-      const pathname = new URL(url).pathname;
-      // 3. get only the surveysId and the choice
-      const p = new Path('/api/surveys/:surveyId/:choice');
-      // 4. return survey id, email and choice, discarding records without surveyId and choice
-      const match = p.test(pathname)
+  /*
+  We want to extract data that:
+  1.) has the property `event: "click" ,
+  2.) has a correct URL
+  3.) is not a duplicate (in case somebody clicks twice)
+
+  URL contains surveyId and choice(yes or no)
+  Email is used to identify the correct user
+  */
+  app.post('/api/survey/webhooks', async (req,res) => {
+    const path =  new Path('/api/surveys/:surveyId/:choice');
+
+    const events = req.body.map(({email, url})=> {
+      const pathname = new URL(url).pathname; // Extract the path from the url (we only care about: api/surveys/:surveyId/yes)
+      const match = path.test(pathname)  // Get records with surveyId and choice. Other documents are disgarded and will return undefined
       if (match) {
         return { email, surveyId: match.surveyId, choice: match.choice }
       }
-      // 5 remove the elements that are undefined
-      const compactEvents = _.compact(events) // will only return event objects, not elements that are undefined
-      // 6. make sure we the same user can not have multiple votes on the same survey
-      const uniqueEvents = _.uniqBy(compactEvents, 'email', surveyId)
+    });
 
-      const runQuery = uniqueEvents.forEach(event => {
-        Survey.updateOne({
-          _id: event.surveyId,
+    const compactEvents =  _.compact(events); // Remove records that are undefined
+    const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId') // Remove duplicate records
+
+    uniqueEvents.forEach(({surveyId, email, choice }) => {
+      Survey.updateOne(
+        {
+          _id: surveyId,
           recipients: {
-            $elemMatch: { email: event.email, responded: false} // for every survey, look through recipients and find a subdocument with this criteria
+            $elemMatch: { email: email, responded: false }
           }
-        }, {
-          $inc: { [event.choice]: 1}, // find the choice property, get that property (either yes or no) and increment it by 1
-          $set: { 'recipients.$.responded': true}, //we want to set set in the survey found, look into recipients, get the right recipients ($ refers to elemMatch), look to their response and set that property to true
-          lastResponded: newDate()
-        }).exec(); //in order to send it to the database
-
-      })
-      res.send({})
+        },
+        {
+          $inc: { [choice]: 1 },
+          $set: { 'recipients.$.responded': true },
+          lastResponded: new Date()
+        }
+      ).exec()
     })
+    res.send({})
   });
 
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res)=> {
@@ -74,7 +80,6 @@ module.exports = app => {
       dateSent: Date.now()
     });
 
-    // Great place to send an email!
     const mailer = new Mailer(survey, surveyTemplate(survey));
 
     try {
