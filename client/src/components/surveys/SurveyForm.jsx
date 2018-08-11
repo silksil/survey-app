@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 
+import formFields from './formFields';
 import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmails';
-import formFields from './formFields';
 
 class SurveyForm extends Component {
   renderFields() {
@@ -13,7 +13,7 @@ class SurveyForm extends Component {
       return (
         <Field key={field.name} component={SurveyField} type="text" label={field.label} name={field.name} />
       );
-    })
+    });
   }
 
   render() {
@@ -47,6 +47,7 @@ function validate(values) {
   return errors;
 }
 
+// destroyOnUnmount to false so we can access the form in SurveyFormReview
 export default reduxForm({
   validate,
   form: 'surveyForm',

@@ -5,7 +5,8 @@ const keys = require('../config/keys');
 // we want to take the Mail class from sendgrid and add additional custumization
 // the customization is the sub-class Mailer
 class Mailer extends helper.Mail {
-  constructor({ subject, recipients }, content ) { // when you use the new keyword, the constructor is automatically being called, you pass arguments to the constructor
+  constructor({ subject, recipients }, content ) {
+    // when you use the new keyword, the constructor is automatically being called, you pass arguments to the constructor
     super();
 
     this.sgApi = sendgrid(keys.sendGridKey);
@@ -14,7 +15,8 @@ class Mailer extends helper.Mail {
     this.body = new helper.Content('text/html', content);
     this.recipients = this.formatAdresses(recipients);
 
-    this.addContent(this.body); //addContent is build in function of Mail class
+    // build in functions of Mail class
+    this.addContent(this.body);
     this.addClickTracking();
     this.addRecipients();
   }
@@ -36,7 +38,8 @@ class Mailer extends helper.Mail {
   addRecipients() {
     const personalize = new helper.Personalization();
     this.recipients.forEach(recipient => {
-      personalize.addTo(recipient); // iterate over recipitiens and for each recipient take them and add them to personalize object
+      personalize.addTo(recipient);
+      // iterate over recipitiens and for each recipient take them and add them to personalize object
     });
     this.addPersonalization(personalize);
   }
@@ -48,7 +51,8 @@ class Mailer extends helper.Mail {
       body: this.toJSON()
     });
 
-    const response = await this.sgApi.API(request); // API function provided by sendgrid
+    const response = await this.sgApi.API(request);
+    // API function provided by sendgrid
     return response;
   }
 }

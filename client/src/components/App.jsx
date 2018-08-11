@@ -19,9 +19,9 @@ class App extends Component {
         <BrowserRouter>
           <div>
             <Header />
-              <div className="container">
+            <div className="container">
               <Route exact path="/" component={Landing} />
-              <Route path="/surveys" component={Dashboard} />
+              <Route exact path="/surveys" component={Dashboard} />
               <Route exact path="/surveys/new" component={SurveyNew} />
             </div>
           </div>
@@ -29,6 +29,6 @@ class App extends Component {
       </div>
     );
   }
-};
+}
 
 export default connect(null, actions)(App);
