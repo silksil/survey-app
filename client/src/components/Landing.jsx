@@ -9,6 +9,6 @@ const Landing = () => {
       Collect feedback from your users
     </div>
   )
-}
+};
 
 export default Landing;

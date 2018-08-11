@@ -39,18 +39,18 @@ module.exports = (app) => {
   app.post('/api/survey/webhooks', async (req,res) => {
     const path =  new Path('/api/surveys/:surveyId/:choice');
 
-    const events = req.body.map(({email, url})=> {
+    const events = req.body.map(({ email, url }) => {
       const pathname = new URL(url).pathname; // Extract the path from the url (we only care about: api/surveys/:surveyId/yes)
-      const match = path.test(pathname)  // Get records with surveyId and choice. Other documents are disgarded and will return undefined
+      const match = path.test(pathname) // Get records with surveyId and choice. Other documents are disgarded and will return undefined
       if (match) {
         return { email, surveyId: match.surveyId, choice: match.choice }
       }
     });
 
-    const compactEvents =  _.compact(events); // Remove records that are undefined
+    const compactEvents = _.compact(events); // Remove records that are undefined
     const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId') // Remove duplicate records
 
-    uniqueEvents.forEach(({surveyId, email, choice }) => {
+    uniqueEvents.forEach(({ surveyId, email, choice }) => {
       Survey.updateOne(
         {
           _id: surveyId,

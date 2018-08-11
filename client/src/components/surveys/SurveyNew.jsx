@@ -1,24 +1,23 @@
 // SurveyNew shows SurveyForm and SurveyFormReview
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-import SurveyForm from './SurveyForm'
+import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
-
 
 class SurveyNew extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { showFormReview: false}
+    this.state = { showFormReview: false };
   }
 
   renderContent() {
-    if (this.state.showFormReview){
+    if (this.state.showFormReview) {
       return (
-      <SurveyFormReview
+        <SurveyFormReview
           onCancel={() => this.setState({ showFormReview: false })}
         />
-      )
+      );
     }
 
     return (
@@ -38,7 +37,6 @@ class SurveyNew extends Component {
 }
 
 // by including reduxForm we are resetting the  destroyOnUnmount to true -> clearing the  form input fields
-
 export default reduxForm({
   form: 'surveyForm',
 })(SurveyNew);
