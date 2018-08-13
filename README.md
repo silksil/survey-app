@@ -7,7 +7,7 @@
 - Notes in relation to this project can be found throughout my [React cheatsheet folder](https://github.com/silksil/best-practices-cheatsheets/tree/master/client/react)
 
 ### Visual Representation App
-![Survey App](./survey-apps.gif)
+![Survey App](./survey-app.gif)
 
 ### Try it yourself?
 `npm install` and include the following variables (requires creating various accounts e.g. Stripe, Google etc.):
