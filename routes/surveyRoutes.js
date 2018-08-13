@@ -20,8 +20,6 @@ module.exports = (app) => {
       recipients: false // no need to send back all the recipients
     });
 
-    console.log(surveys)
-
     res.send(surveys)
 
   });
@@ -37,6 +35,7 @@ module.exports = (app) => {
   Email is used to identify the correct user
   */
   app.post('/api/survey/webhooks', async (req,res) => {
+    console.log("jo")
     const path =  new Path('/api/surveys/:surveyId/:choice');
 
     const events = req.body.map(({ email, url }) => {
